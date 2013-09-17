@@ -50,7 +50,7 @@ public class Percolation {
     	    	if (i == 1)
     	    		quickUnionUF.union(xyTo1D(i, j), 0);
     	    	if ((i==N))
-    	    		quickUnionUF.union(xyTo1D(i, j), N*N+1);
+    	    		quickUnionUF.union(xyTo1D(i, j), N*N+1); // got backwash
     		}
     	} else {
     		throw new IndexOutOfBoundsException("wrong indices");
