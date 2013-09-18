@@ -1,3 +1,8 @@
+/**
+ * 
+ * @author Huangzf
+ *
+ */
 public class Subset {
 
 	/**

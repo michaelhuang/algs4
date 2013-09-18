@@ -1,6 +1,12 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * 
+ * @author Huangzf
+ *
+ * @param <Item>
+ */
 public class RandomizedQueue<Item> implements Iterable<Item> {
 
 	private Item[] a;

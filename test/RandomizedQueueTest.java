@@ -3,7 +3,11 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
-
+/**
+ * 
+ * @author Huangzf
+ *
+ */
 public class RandomizedQueueTest {
 
 	private RandomizedQueue<String> queue;
