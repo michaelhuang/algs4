@@ -69,19 +69,20 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
 	// return an independent iterator over items in random order
 	public Iterator<Item> iterator() {
-		return new ListIterator<Item>(a);
+		return new ListIterator<Item>();
 	}
 	
-	private static class ListIterator<Item> implements Iterator<Item> {
+	@SuppressWarnings("hiding")
+	private class ListIterator<Item> implements Iterator<Item> {
 		private Item[] cur;
 		private int n;
 		
 		@SuppressWarnings("unchecked")
-		public ListIterator(Item[] a) {
-			n = a.length;
+		public ListIterator() {
+			n = size();
 			cur = (Item[]) new Object[n];
 			for (int i=0; i < n; i++)
-				cur[i] = a[i];
+				cur[i] = (Item) a[i];
 			StdRandom.shuffle(cur);
 		}
 		
@@ -99,12 +100,26 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 		}
 		
 	}
+	
+	private int getArraySize() {
+		return a.length;
+	}
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		RandomizedQueue<String> queue = new RandomizedQueue<String>();
+		queue.enqueue("A");
+		queue.enqueue("B");
+		queue.enqueue("C");
+		queue.enqueue("D");
+		queue.enqueue("E");
+		Iterator<String> iterator = queue.iterator();
+		while (iterator.hasNext()) {
+			StdOut.println(iterator.next());
+		}
+		StdOut.println("size: " + queue.size());
+		StdOut.println("size of array: " + queue.getArraySize());
 	}
 }
