@@ -82,5 +82,9 @@ public class Point implements Comparable<Point> {
         Point point = new Point(2, 3);
         Point point2 = new Point(1001, 2334);
         StdOut.println(point.slopeTo(point2));
+        StdOut.println(Double.POSITIVE_INFINITY > Double.NEGATIVE_INFINITY);
+        StdOut.println(Double.POSITIVE_INFINITY == Double.POSITIVE_INFINITY);
+        StdOut.println(Double.NEGATIVE_INFINITY == Double.NEGATIVE_INFINITY);
+        StdOut.println(Double.NaN == Double.NaN);
     }
 }
