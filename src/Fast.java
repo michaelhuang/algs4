@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Arrays;
 
 /**
  * Write a program Fast.java that implements this algorithm. The order of growth 
@@ -14,17 +12,28 @@ import java.util.List;
  */
 public class Fast {
     
-    private static int LEAST_POINTS_PER_LINE = 4;
+    // per line has 4 points at least
+    private int LEAST_POINTS_PER_LINE = 4;
+    // avoid print subsegments of a line segment containing 5 or more points
+    private Point FINISH = new Point(-1, -1);
     
-    private static void drawLine(Point point, List<Point> list) {
-        if (null == list || list.isEmpty()) return;
-        Point max = point, min = point;
-        for (Point i : list) {
-            if (max.compareTo(i) < 0) max = i;
-            if (min.compareTo(i) > 0) min = i;
+    // print the line and draw it
+    private void drawLine(Point point, Point[] list, int start, int end) {
+        if (null == list || list.length == 0) return;
+        if (end - start <= LEAST_POINTS_PER_LINE -2) return;
+        if (list[end-1].compareTo(FINISH) == 0) return;
+        
+        StdOut.print(point);
+        StdOut.print(" -> ");
+        for (int i=start; i < end; i++) {
+            StdOut.print(list[i]);
+            if (i != end-1) StdOut.print(" -> ");
         }
-            
-        min.drawTo(max);
+        StdOut.println();
+        
+        point.drawTo(list[end-1]);
+        
+        FINISH = list[end-1];
     }
     
     /**
@@ -38,58 +47,53 @@ public class Fast {
         StdDraw.setYscale(0, 32768);
         StdDraw.show(0);
         
+        // store all points in points[] and draw all
         String fileName = args[0];
         In in = new In(fileName);
         int N = in.readInt();
-        List<Point> points = new ArrayList<Point>();
+        Point[] points = new Point[N];
         for (int i=0; i < N; i++) {
             Point p = new Point(in.readInt(), in.readInt());
-            points.add(p);
+            points[i] = p;
             p.draw();
         }
         StdDraw.show(0);
-                
-        int low = 0;
-        for (int i=0; i < N-LEAST_POINTS_PER_LINE+1; i++) {
-            Point point = points.get(i);
-            List<Point> list = points.subList(i+1, N);
-            Collections.sort(list, point.SLOPE_ORDER);
+        
+        Arrays.sort(points);
+        
+        Fast fast = new Fast();
+        // test
+        /*for (int m=0; m < N; m++)
+            StdOut.println(points[m].toString());*/
+        
+        Point[] points2 = new Point[N];
+        for (int i=0; i < N-fast.LEAST_POINTS_PER_LINE+1; i++) {
+            // pick origin
+            Point point = points[i];
+            int low = 0;
+            // size of remaining points
+            int sizeOfRemain = N-i-1;
+            System.arraycopy(points, i+1, points2, 0, sizeOfRemain);
+            Arrays.sort(points2, 0, sizeOfRemain, point.SLOPE_ORDER);
             
-            StdOut.println("Point: " + point.toString());
-            for (Point point2 : list)
-                StdOut.println(point2.toString() + point.slopeTo(point2));
-            StdOut.println();
+            // test
+            /*StdOut.println("Point: " + point.toString());
+            for (int k=0; k < sortSize; k++)
+                StdOut.println(points2[k].toString() + point.slopeTo(points2[k]));
+            StdOut.println();*/
             
-            double lastSlope = point.slopeTo(list.get(0));
-            for (int j=1; j < list.size(); j++) {
-                double currSlope = point.slopeTo(list.get(j));
+            double lastSlope = point.slopeTo(points2[0]);
+            for (int j=1; j < sizeOfRemain; j++) {
+                double currSlope = point.slopeTo(points2[j]);
                 if (currSlope != lastSlope) {
-                    if (j - low > LEAST_POINTS_PER_LINE -2) {
-                        drawLine(point, list.subList(low, j));
-                        StdOut.print(point.toString());
-                        StdOut.print(" -> ");
-                        while (low < j) {
-                            StdOut.print(list.get(low));
-                            if (++low != j) StdOut.print(" -> ");
-                        }
-                        StdOut.println();
-                    } else {
-                        low = j;
-                    }
-                    lastSlope = point.slopeTo(list.get(low));
+                    fast.drawLine(point, points2, low, j);
+                    low = j;
+                    lastSlope = point.slopeTo(points2[low]);
                 }
             }
             
-            if (list.size() - low > LEAST_POINTS_PER_LINE - 2) {
-                drawLine(point, list.subList(low, list.size()));
-                StdOut.print(point.toString());
-                StdOut.print(" -> ");
-                while (low < list.size()) {
-                    StdOut.print(list.get(low));
-                    if (++low != list.size()) StdOut.print(" -> ");
-                }
-                StdOut.println();
-            }
+            // last few points are in a line
+            fast.drawLine(point, points2, low, sizeOfRemain);
         }
         StdDraw.show(0);
     }
