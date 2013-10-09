@@ -1,4 +1,6 @@
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Write a program Fast.java that implements this algorithm. The order of growth 
@@ -15,13 +17,18 @@ public class Fast {
     // per line has 4 points at least
     private int LEAST_POINTS_PER_LINE = 4;
     // avoid print subsegments of a line segment containing 5 or more points
-    private Point FINISH = new Point(-1, -1);
+    private Set<String> set = new HashSet<String>();
+    
+//    private static int count = 0;
     
     // print the line and draw it
     private void drawLine(Point point, Point[] list, int start, int end) {
         if (null == list || list.length == 0) return;
         if (end - start <= LEAST_POINTS_PER_LINE -2) return;
-        if (list[end-1].compareTo(FINISH) == 0) return;
+        
+        String string = list[end-1].toString() + list[end-2].toString();
+        if (set.contains(string)) return;
+        set.add(string);
         
         StdOut.print(point);
         StdOut.print(" -> ");
@@ -33,7 +40,7 @@ public class Fast {
         
         point.drawTo(list[end-1]);
         
-        FINISH = list[end-1];
+//        count++;
     }
     
     /**
@@ -96,6 +103,8 @@ public class Fast {
             fast.drawLine(point, points2, low, sizeOfRemain);
         }
         StdDraw.show(0);
+        
+//        StdOut.println("Count: " + count);
     }
 
 }
