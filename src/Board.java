@@ -58,7 +58,15 @@ public class Board {
     
     // is this board the goal board?
     public boolean isGoal() {
-        return hamming() == 0;
+    	if (tiles[N - 1][N - 1] != 0)
+            return false;
+        int value = 1;
+        for (int row = 0; row < N; row++)
+            for (int col = 0; col < N; col++)
+                if (tiles[row][col] != value++
+                        && (row != N - 1 || col != N - 1))
+                    return false;
+        return true;
     }
     
     // a board obtained by exchanging two adjacent blocks in the same row
