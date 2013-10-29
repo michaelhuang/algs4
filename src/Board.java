@@ -13,8 +13,8 @@ public class Board {
     // construct a board from an N-by-N array of blocks
     // (where blocks[i][j] = block in row i, column j)
     public Board(int[][] blocks) {
-        this.tiles = blocks;
-        this.N = blocks.length;
+    	this.N = blocks.length;
+        this.tiles = copy(blocks);
     }
     
     // board dimension N
@@ -63,36 +63,29 @@ public class Board {
     
     // a board obtained by exchanging two adjacent blocks in the same row
     public Board twin() {
-        int[][] twin = new int[N][N];
-        for (int i=0; i < N; i++)
-            for (int j=0; j < N; j++)
-                twin[i][j] = tiles[i][j];
-        
-        if (N == 2) {
-            for (int i=0; i < N; i++)
-                for (int j=0; j < N; j++)
-                    if (0 == twin[i][j]) {
-                        if (0 == i)
-                            exch(twin, 1, 0, 1, 1);
-                        else
-                            exch(twin, 0, 0, 0, 1);
-                        return new Board(twin);
-                    }
+    	int[][] copy = copy(tiles);
+        if (N <= 1)
+            return new Board(copy);
+        // Find zero so that we don't exchange with the blank
+        // This looks like a O(dim^2) algorithm, but on average it should finish
+        // in O(1).
+        int row = 0;
+        int col = 0;
+        int value = 0;
+        int lastValue = tiles[0][0];
+        zerosearch:
+        for (row = 0; row < N; row++) {
+            for (col = 0; col < N; col++) {
+                value = tiles[row][col];
+                // Check col>0 because swap must occur on same row
+                if (value != 0 && lastValue != 0 && col > 0)
+                    break zerosearch;
+                lastValue = value;
+            }
         }
-        
-        int i = StdRandom.uniform(N);
-        int j = StdRandom.uniform(N);
-        if (twin[i][j] == 0)
-            j++;
-        int k = (j+1) % N;
-        if (twin[i][k] == 0) {
-            k++;
-            k= k % N;
-        }
-        
-        exch(twin, i, j, i, k);
-        
-        return new Board(twin);
+        copy[row][col] = lastValue;
+        copy[row][col - 1] = value;
+        return new Board(copy);
     }
     
     // does this board equal y?
@@ -125,11 +118,7 @@ public class Board {
     }
     
     private Board getNeighbor(int i, int j, int m, int n) {
-        int[][] neighbor = new int[N][N];
-        for (int x=0; x < N; x++)
-            for (int y=0; y < N; y++)
-                neighbor[x][y] = tiles[x][y];
-        
+        int[][] neighbor = copy(tiles);
         exch(neighbor, i, j, m, n);
         return new Board(neighbor);
     }
@@ -138,6 +127,14 @@ public class Board {
         int temp = blocks[i][j];
         blocks[i][j] = blocks[m][n];
         blocks[m][n] = temp;
+    }
+    
+    private int[][] copy(int[][] blocks) {
+    	int[][] temp = new int[N][N];
+        for (int i=0; i < N; i++)
+            for (int j=0; j < N; j++)
+                temp[i][j] = blocks[i][j];
+        return temp;
     }
     
     // string representation of the board (in the output format specified below)
