@@ -13,7 +13,7 @@ public class Board {
     // construct a board from an N-by-N array of blocks
     // (where blocks[i][j] = block in row i, column j)
     public Board(int[][] blocks) {
-    	this.N = blocks.length;
+        this.N = blocks.length;
         this.tiles = copy(blocks);
     }
     
@@ -58,7 +58,7 @@ public class Board {
     
     // is this board the goal board?
     public boolean isGoal() {
-    	if (tiles[N - 1][N - 1] != 0)
+        if (tiles[N - 1][N - 1] != 0)
             return false;
         int value = 1;
         for (int row = 0; row < N; row++)
@@ -71,7 +71,7 @@ public class Board {
     
     // a board obtained by exchanging two adjacent blocks in the same row
     public Board twin() {
-    	int[][] copy = copy(tiles);
+        int[][] copy = copy(tiles);
         if (N <= 1)
             return new Board(copy);
         // Find zero so that we don't exchange with the blank
@@ -138,7 +138,7 @@ public class Board {
     }
     
     private int[][] copy(int[][] blocks) {
-    	int[][] temp = new int[N][N];
+        int[][] temp = new int[N][N];
         for (int i=0; i < N; i++)
             for (int j=0; j < N; j++)
                 temp[i][j] = blocks[i][j];
